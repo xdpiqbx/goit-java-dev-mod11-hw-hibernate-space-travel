@@ -8,6 +8,8 @@ import com.dpiqb.client.ClientCrudService;
 import com.dpiqb.db.DatabaseMigrateService;
 import com.dpiqb.planet.Planet;
 import com.dpiqb.planet.PlanetCrudService;
+import com.dpiqb.ticket.Ticket;
+import com.dpiqb.ticket.TicketCrudService;
 
 import java.util.List;
 
@@ -32,6 +34,14 @@ public class App {
     List<Planet> planets = planetCrudService.readAllPlanets();
     for (Planet planet : planets) {
       System.out.println(planet);
+    }
+
+    System.out.println("\n ============ All Tickets ============ ");
+
+    TicketCrudService ticketCrudService = new TicketCrudService();
+    List<Ticket> tickets = ticketCrudService.readAllTickets();
+    for (Ticket ticket : tickets) {
+      System.out.println(ticket);
     }
   }
 }

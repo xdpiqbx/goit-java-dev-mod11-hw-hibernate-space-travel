@@ -2,6 +2,7 @@ package com.dpiqb.db;
 
 import com.dpiqb.client.Client;
 import com.dpiqb.planet.Planet;
+import com.dpiqb.ticket.Ticket;
 import lombok.Getter;
 import org.hibernate.SessionFactory;
 import org.hibernate.cfg.Configuration;
@@ -17,6 +18,7 @@ public class HibernateUtil {
     sessionFactory = new Configuration()
       .addAnnotatedClass(Client.class)
       .addAnnotatedClass(Planet.class)
+      .addAnnotatedClass(Ticket.class)
       .buildSessionFactory();
   }
   public static HibernateUtil getInstance(){

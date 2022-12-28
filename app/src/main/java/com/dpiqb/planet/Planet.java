@@ -1,7 +1,11 @@
 package com.dpiqb.planet;
 
+import com.dpiqb.ticket.Ticket;
 import jakarta.persistence.*;
 import lombok.Data;
+import lombok.ToString;
+
+import java.util.List;
 
 @Table(name = "planet")
 @Entity
@@ -12,4 +16,10 @@ public class Planet {
     private String id;
     @Column(name = "name")
     private String name;
+    @OneToMany (mappedBy = "fromPlanetId", cascade = CascadeType.ALL)
+    @ToString.Exclude
+    private List<Ticket> fromTickets;
+    @OneToMany (mappedBy = "toPlanetId", cascade = CascadeType.ALL)
+    @ToString.Exclude
+    private List<Ticket> toTickets;
 }

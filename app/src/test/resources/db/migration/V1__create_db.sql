@@ -1,0 +1,35 @@
+CREATE TABLE client(
+  id IDENTITY PRIMARY KEY,
+  name VARCHAR(200) NOT NULL,
+  CHECK (CHAR_LENGTH(name) > 2 AND CHAR_LENGTH(name) < 201)
+);
+
+CREATE TABLE planet(
+  id VARCHAR(500) NOT NULL UNIQUE,
+  name VARCHAR(500) NOT NULL UNIQUE,
+  CHECK (CHAR_LENGTH(name) > 0 AND CHAR_LENGTH(name) < 501)
+);
+
+CREATE TABLE ticket(
+  id IDENTITY PRIMARY KEY,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP(0),
+  client_id BIGINT NOT NULL,
+  from_planet_id VARCHAR(504) NOT NULL,
+  to_planet_id VARCHAR(504) NOT NULL,
+  FOREIGN KEY (client_id) REFERENCES client(id) ON DELETE CASCADE,
+  FOREIGN KEY (from_planet_id) REFERENCES planet(id) ON DELETE CASCADE,
+  FOREIGN KEY (to_planet_id) REFERENCES planet(id) ON DELETE CASCADE
+);
+
+-- Do not touch. This is how I created the ids for the planets
+
+--CREATE TABLE planet(
+--  id VARCHAR(504) NOT NULL
+--  GENERATED ALWAYS AS
+--  CONCAT(
+--    UPPER(NAME),
+--    CAST(ROUND(RAND()*10000) AS INT)
+--  ),
+--  name VARCHAR(500) NOT NULL UNIQUE,
+--  CHECK (CHAR_LENGTH(name) > 0 AND CHAR_LENGTH(name) < 501)
+--);

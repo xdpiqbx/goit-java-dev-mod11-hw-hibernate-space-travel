@@ -73,7 +73,7 @@ public class TicketCrudServiceTest {
   }
   @Test
   public void deleteById(){
-    long id = 2L;
+    long id = Helper.getRandomTicketFromDB().getId();
 
     ticketCrudService.deleteById(id);
 

@@ -32,7 +32,7 @@ public class PlanetCrudServiceTest {
     planetCrudService.create(actualPlanet);
 
     Planet expectedPlanet = session.get(Planet.class, actualPlanet.getId());
-    Assertions.assertEquals(expectedPlanet, actualPlanet);
+    Assertions.assertEquals(expectedPlanet.toString(), actualPlanet.toString());
   }
   @Test
   public void readByIdTest(){
@@ -43,7 +43,7 @@ public class PlanetCrudServiceTest {
 
     for (Planet actualPlanet : actualPlanets) {
       Planet expectedPlanet = planetCrudService.readById(actualPlanet.getId());
-      Assertions.assertEquals(expectedPlanet, actualPlanet);
+      Assertions.assertEquals(expectedPlanet.toString(), actualPlanet.toString());
     }
   }
   @Test
@@ -92,9 +92,12 @@ public class PlanetCrudServiceTest {
   public void readAllPlanetsTest(){
     List<Planet> expectedPlanets = planetCrudService.readAllPlanets();
     List<Planet> actualPlanets = session.createQuery("from Planet", Planet.class).list();
-    Assertions.assertIterableEquals(expectedPlanets, actualPlanets);
+    int size = actualPlanets.size();
+    for (int i = 0; i < size; i++) {
+      Assertions.assertEquals(expectedPlanets.get(i).toString(), actualPlanets.get(i).toString());
+    }
   }
-  private static Planet getRandomPlanetFromDB(){
+  public static Planet getRandomPlanetFromDB(){
     return session
       .createQuery("from Planet where 1=1 order by rand()", Planet.class)
       .setMaxResults(1)

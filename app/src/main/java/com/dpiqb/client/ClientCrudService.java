@@ -18,7 +18,7 @@ public class ClientCrudService {
 //  Read
   public Client readById (long id){
     try(Session session = HibernateUtil.getInstance().getSessionFactory().openSession()){
-      return session.get(Client.class, id);
+      return session.find(Client.class, id);
     }
   }
 //  Update

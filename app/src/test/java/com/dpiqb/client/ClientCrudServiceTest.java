@@ -7,12 +7,12 @@ import org.hibernate.query.Query;
 import org.junit.jupiter.api.*;
 
 import java.util.List;
+import java.util.Random;
 
 public class ClientCrudServiceTest {
   static HibernateUtil util;
   static Session session;
   static ClientCrudService clientCrudService;
-
   @BeforeAll
   public static void init(){
     DatabaseMigrateServiceForTest.migrateDatabase();
@@ -33,10 +33,7 @@ public class ClientCrudServiceTest {
 
     clientCrudService.create(actualClient);
 
-    Query<Client> query = session.createQuery("from Client where id = :id", Client.class);
-    query.setParameter("id", actualClient.getId());
-    Client expectedClient = query.stream().findFirst().orElse(null);
-    assert expectedClient != null;
+    Client expectedClient = session.get(Client.class, actualClient.getId());
     Assertions.assertEquals(expectedClient.getName(), actualClient.getName());
   }
   @Test
@@ -48,24 +45,17 @@ public class ClientCrudServiceTest {
 
     for (Client actualClient : actualClients) {
       Client expectedClient = clientCrudService.readById(actualClient.getId());
-      Assertions.assertEquals(expectedClient.getId(), actualClient.getId());
-      Assertions.assertEquals(expectedClient.getName(), actualClient.getName());
+      Assertions.assertEquals(expectedClient.toString(), actualClient.toString());
     }
   }
   @Test
   public void updateTest(){
-    // to update client we need id and new data
-    // i will update random client (imagine that it was transmitted by the user)
     Client actualClient = getRandomClientFromDB();
     actualClient.setName("Xenomorph");
 
     clientCrudService.update(actualClient);
 
-    Query<Client> query = session.createQuery("from Client where id = :id", Client.class);
-    query.setParameter("id", actualClient.getId());
-    Client expectedClient = query.stream().findFirst().orElse(null);
-
-    assert expectedClient != null;
+    Client expectedClient = session.find(Client.class, actualClient.getId());
     Assertions.assertEquals(expectedClient, actualClient);
   }
   @Test
@@ -74,17 +64,17 @@ public class ClientCrudServiceTest {
 
     clientCrudService.update(actualClient);
 
-    Query<Client> query = session.createQuery("from Client where id = :id", Client.class);
-    query.setParameter("id", actualClient.getId());
-    Client expectedClient = query.stream().findFirst().orElse(null);
-
-    assert expectedClient != null;
+    Client expectedClient = session.find(Client.class, actualClient.getId());
     Assertions.assertEquals(expectedClient, actualClient);
   }
 
   @Test
   public void deleteByIdTest(){
-    Client actualClient = getRandomClientFromDB();
+    List<Client> allIds = session.createQuery("select c.id from Client c", Client.class).list();
+    Random random = new Random();
+    int randInt = random.nextInt(1, allIds.size()-1);
+
+    Client actualClient = session.get(Client.class, allIds.get(randInt));
     long id = actualClient.getId();
 
     clientCrudService.deleteById(id);
@@ -100,16 +90,17 @@ public class ClientCrudServiceTest {
   public void readAllClientsTest(){
     List<Client> expectedClients = clientCrudService.readAllClients();
     List<Client> actualClients = session.createQuery("from Client", Client.class).list();
-    Assertions.assertIterableEquals(expectedClients, actualClients);
+    int size = actualClients.size();
+    for (int i = 0; i < size; i++) {
+      Assertions.assertEquals(expectedClients.get(i).toString(), actualClients.get(i).toString());
+    }
   }
-
-  private static Client getRandomClientFromDB(){
+  public static Client getRandomClientFromDB(){
     return session
       .createQuery("from Client where 1=1 order by rand()", Client.class)
       .setMaxResults(1)
       .getSingleResult();
   }
-
   @AfterEach
   public void closeSession(){
     session.close();

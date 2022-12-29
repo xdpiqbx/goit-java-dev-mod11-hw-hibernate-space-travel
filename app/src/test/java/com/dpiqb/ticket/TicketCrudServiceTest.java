@@ -1,12 +1,13 @@
 package com.dpiqb.ticket;
 
+import com.dpiqb.Helper;
 import com.dpiqb.db.DatabaseMigrateServiceForTest;
 import com.dpiqb.db.HibernateUtil;
-import com.dpiqb.planet.Planet;
-import com.dpiqb.planet.PlanetCrudService;
 import org.hibernate.Session;
 import org.junit.jupiter.api.*;
 
+import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.List;
 
 public class TicketCrudServiceTest {
@@ -19,6 +20,66 @@ public class TicketCrudServiceTest {
     util = HibernateUtil.getInstance();
     ticketCrudService = new TicketCrudService();
   }
+  @BeforeEach
+  public void openSession() {
+    session = util.getSessionFactory().openSession();
+  }
+  @Test
+  public void createTest(){
+    Ticket actualTicket = new Ticket();
+    actualTicket.setClientId(Helper.getRandomClientFromDB());
+    actualTicket.setCreatedAt(LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS));
+    actualTicket.setFromPlanetId(Helper.getRandomPlanetFromDB());
+    actualTicket.setToPlanetId(Helper.getRandomPlanetFromDB());
+
+    ticketCrudService.create(actualTicket);
+
+    Ticket expectedTicket = session.find(Ticket.class, actualTicket.getId());
+    Assertions.assertEquals(expectedTicket.toString(), actualTicket.toString());
+  }
+  @Test
+  public void readByIdTestTest(){
+    List<Ticket> actualTickets = session.createQuery(
+        "from Ticket", Ticket.class)
+      .setMaxResults(5)
+      .list();
+
+    for (Ticket actualTicket : actualTickets) {
+      Ticket expectedTicket = ticketCrudService.readById(actualTicket.getId());
+      Assertions.assertEquals(expectedTicket.toString(), actualTicket.toString());
+    }
+  }
+  @Test
+  public void update(){
+    Ticket actualTicket = Helper.getRandomTicketFromDB();
+    actualTicket.setClientId(Helper.getRandomClientFromDB());
+    actualTicket.setCreatedAt(LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS));
+    actualTicket.setFromPlanetId(Helper.getRandomPlanetFromDB());
+    actualTicket.setToPlanetId(Helper.getRandomPlanetFromDB());
+
+    ticketCrudService.update(actualTicket);
+
+    Ticket expectedTicket = session.find(Ticket.class, actualTicket.getId());
+    Assertions.assertEquals(expectedTicket.toString(), actualTicket.toString());
+  }
+  @Test
+  public void updateIfUserHaveNothingChangeTest(){
+    Ticket actualTicket = Helper.getRandomTicketFromDB();
+
+    ticketCrudService.update(actualTicket);
+
+    Ticket expectedTicket = session.find(Ticket.class, actualTicket.getId());
+    Assertions.assertEquals(expectedTicket.toString(), actualTicket.toString());
+  }
+  @Test
+  public void deleteById(){
+    long id = 2L;
+
+    ticketCrudService.deleteById(id);
+
+    Ticket expectedTicket = session.find(Ticket.class, id);
+    Assertions.assertNull(expectedTicket);
+  }
   @Test
   public void readAllTicketsTest(){
     List<Ticket> expectedTickets = ticketCrudService.readAllTickets();
@@ -27,15 +88,8 @@ public class TicketCrudServiceTest {
 
     Assertions.assertEquals(expectedTickets.size(), actualTickets.size());
     for (int i = 0; i < size; i++) {
-      Assertions.assertEquals(expectedTickets.get(i).getId(), actualTickets.get(i).getId());
-      Assertions.assertEquals(expectedTickets.get(i).getClientId().toString(), actualTickets.get(i).getClientId().toString());
-      Assertions.assertEquals(expectedTickets.get(i).getFromPlanetId().toString(), actualTickets.get(i).getFromPlanetId().toString());
-      Assertions.assertEquals(expectedTickets.get(i).getToPlanetId().toString(), actualTickets.get(i).getToPlanetId().toString());
+      Assertions.assertEquals(expectedTickets.toString(), actualTickets.toString());
     }
-  }
-  @BeforeEach
-  public void openSession() {
-    session = util.getSessionFactory().openSession();
   }
   @AfterEach
   public void closeSession(){

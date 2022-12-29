@@ -1,5 +1,6 @@
 package com.dpiqb.planet;
 
+import com.dpiqb.Helper;
 import com.dpiqb.db.DatabaseMigrateServiceForTest;
 import com.dpiqb.db.HibernateUtil;
 import org.hibernate.Session;
@@ -48,7 +49,7 @@ public class PlanetCrudServiceTest {
   }
   @Test
   public void updateTest(){
-    Planet actualPlanet = getRandomPlanetFromDB();
+    Planet actualPlanet = Helper.getRandomPlanetFromDB();
     String name = "Prometheus";
 
     actualPlanet.setName(name);
@@ -60,11 +61,11 @@ public class PlanetCrudServiceTest {
     Planet expectedPlanet = query.stream().findFirst().orElse(null);
 
     assert expectedPlanet != null;
-    Assertions.assertEquals(expectedPlanet, actualPlanet);
+    Assertions.assertEquals(expectedPlanet.toString(), actualPlanet.toString());
   }
   @Test
   public void updateIfUserHaveNothingChangeTest(){
-    Planet actualPlanet = getRandomPlanetFromDB();
+    Planet actualPlanet = Helper.getRandomPlanetFromDB();
 
     planetCrudService.update(actualPlanet);
 
@@ -73,11 +74,11 @@ public class PlanetCrudServiceTest {
     Planet expectedPlanet = query.stream().findFirst().orElse(null);
 
     assert expectedPlanet != null;
-    Assertions.assertEquals(expectedPlanet, actualPlanet);
+    Assertions.assertEquals(expectedPlanet.toString(), actualPlanet.toString());
   }
   @Test
   public void deleteByIdTest(){
-    Planet actualPlanet = getRandomPlanetFromDB();
+    Planet actualPlanet = Helper.getRandomPlanetFromDB();
     String id = actualPlanet.getId();
 
     planetCrudService.deleteById(id);
@@ -96,12 +97,6 @@ public class PlanetCrudServiceTest {
     for (int i = 0; i < size; i++) {
       Assertions.assertEquals(expectedPlanets.get(i).toString(), actualPlanets.get(i).toString());
     }
-  }
-  public static Planet getRandomPlanetFromDB(){
-    return session
-      .createQuery("from Planet where 1=1 order by rand()", Planet.class)
-      .setMaxResults(1)
-      .getSingleResult();
   }
   @AfterEach
   public void closeSession(){

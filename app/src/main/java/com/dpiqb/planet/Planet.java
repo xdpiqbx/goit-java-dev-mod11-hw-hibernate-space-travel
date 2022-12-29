@@ -16,10 +16,10 @@ public class Planet {
     private String id;
     @Column(name = "name")
     private String name;
-    @OneToMany (mappedBy = "fromPlanetId", cascade = CascadeType.REMOVE)
+    @OneToMany (mappedBy = "fromPlanet", cascade = CascadeType.REMOVE)
     @ToString.Exclude
     private List<Ticket> fromTickets;
-    @OneToMany (mappedBy = "toPlanetId", cascade = CascadeType.REMOVE)
+    @OneToMany (mappedBy = "toPlanet", cascade = CascadeType.REMOVE)
     @ToString.Exclude
     private List<Ticket> toTickets;
 }

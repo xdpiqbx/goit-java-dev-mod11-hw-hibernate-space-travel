@@ -25,15 +25,15 @@ public class Ticket {
   @JoinColumn(
     name="client_id",
     nullable=false)
-  private Client clientId;
+  private Client client;
   @ManyToOne (cascade = CascadeType.REFRESH)
   @JoinColumn(
     name="from_planet_id",
     nullable=false)
-  private Planet fromPlanetId;
+  private Planet fromPlanet;
   @ManyToOne (cascade = CascadeType.REFRESH)
   @JoinColumn(
     name="to_planet_id",
     nullable=false)
-  private Planet toPlanetId;
+  private Planet toPlanet;
 }

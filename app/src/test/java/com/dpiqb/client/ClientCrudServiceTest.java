@@ -1,5 +1,6 @@
 package com.dpiqb.client;
 
+import com.dpiqb.Helper;
 import com.dpiqb.db.DatabaseMigrateServiceForTest;
 import com.dpiqb.db.HibernateUtil;
 import org.hibernate.Session;
@@ -50,22 +51,22 @@ public class ClientCrudServiceTest {
   }
   @Test
   public void updateTest(){
-    Client actualClient = getRandomClientFromDB();
+    Client actualClient = Helper.getRandomClientFromDB();
     actualClient.setName("Xenomorph");
 
     clientCrudService.update(actualClient);
 
     Client expectedClient = session.find(Client.class, actualClient.getId());
-    Assertions.assertEquals(expectedClient, actualClient);
+    Assertions.assertEquals(expectedClient.toString(), actualClient.toString());
   }
   @Test
   public void updateIfUserHaveNothingChangeTest(){
-    Client actualClient = getRandomClientFromDB();
+    Client actualClient = Helper.getRandomClientFromDB();
 
     clientCrudService.update(actualClient);
 
     Client expectedClient = session.find(Client.class, actualClient.getId());
-    Assertions.assertEquals(expectedClient, actualClient);
+    Assertions.assertEquals(expectedClient.toString(), actualClient.toString());
   }
 
   @Test
@@ -94,12 +95,6 @@ public class ClientCrudServiceTest {
     for (int i = 0; i < size; i++) {
       Assertions.assertEquals(expectedClients.get(i).toString(), actualClients.get(i).toString());
     }
-  }
-  public static Client getRandomClientFromDB(){
-    return session
-      .createQuery("from Client where 1=1 order by rand()", Client.class)
-      .setMaxResults(1)
-      .getSingleResult();
   }
   @AfterEach
   public void closeSession(){

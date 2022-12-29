@@ -20,7 +20,7 @@ public class Client {
   private long id;
   @Column(name = "name")
   private String name;
-  @OneToMany (mappedBy = "clientId", cascade = CascadeType.REMOVE)
+  @OneToMany (mappedBy = "client", cascade = CascadeType.REMOVE)
   @ToString.Exclude
   private List<Ticket> tickets;
 }

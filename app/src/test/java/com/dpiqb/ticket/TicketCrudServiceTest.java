@@ -27,10 +27,10 @@ public class TicketCrudServiceTest {
   @Test
   public void createTest(){
     Ticket actualTicket = new Ticket();
-    actualTicket.setClientId(Helper.getRandomClientFromDB());
+    actualTicket.setClient(Helper.getRandomClientFromDB());
     actualTicket.setCreatedAt(LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS));
-    actualTicket.setFromPlanetId(Helper.getRandomPlanetFromDB());
-    actualTicket.setToPlanetId(Helper.getRandomPlanetFromDB());
+    actualTicket.setFromPlanet(Helper.getRandomPlanetFromDB());
+    actualTicket.setToPlanet(Helper.getRandomPlanetFromDB());
 
     ticketCrudService.create(actualTicket);
 
@@ -52,10 +52,10 @@ public class TicketCrudServiceTest {
   @Test
   public void update(){
     Ticket actualTicket = Helper.getRandomTicketFromDB();
-    actualTicket.setClientId(Helper.getRandomClientFromDB());
+    actualTicket.setClient(Helper.getRandomClientFromDB());
     actualTicket.setCreatedAt(LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS));
-    actualTicket.setFromPlanetId(Helper.getRandomPlanetFromDB());
-    actualTicket.setToPlanetId(Helper.getRandomPlanetFromDB());
+    actualTicket.setFromPlanet(Helper.getRandomPlanetFromDB());
+    actualTicket.setToPlanet(Helper.getRandomPlanetFromDB());
 
     ticketCrudService.update(actualTicket);
 
